@@ -1,73 +1,152 @@
-# Welcome to your Lovable project
+# JobAlignAI – AI-Powered Job Tracking & Matching System
 
-## Project info
+## 🚀 Overview
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+JobAlignAI is a full-stack job tracking platform that fetches real-time job listings, matches them against a user's resume using AI, and helps track applications with an intelligent workflow system.
 
-## How can I edit this code?
+The application combines real-time job data, AI-powered resume matching, and application management into a single streamlined experience.
 
-There are several ways of editing your application.
+---
 
-**Use Lovable**
+## 🔐 Authentication & Onboarding
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
+- Secure email authentication using Supabase Auth
+- Resume upload (PDF/TXT) during onboarding
+- Resume text extraction and storage
+- Resume replacement/update from user settings
+- User profile management
 
-Changes made via Lovable will be committed automatically to this repo.
+---
 
-**Use your preferred IDE**
+## 💼 Job Feed Dashboard
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
+- Real-time job listings fetched via JSearch API (through Supabase Edge Functions)
+- Clean card-based UI displaying:
+  - Job title
+  - Company
+  - Location
+  - Description
+  - Job type
+  - AI match score
 
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
+### 🎯 AI Match Scoring
 
-Follow these steps:
+Each job is evaluated against the user’s resume using AI:
 
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
+- Match score (0–100%)
+- Skill alignment analysis
+- Explanation of compatibility
+- Cached results for performance optimization
 
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
+#### Match Badge Colors
+- 🟢 Green – High match (>70%)
+- 🟡 Yellow – Medium match (40–70%)
+- ⚪ Gray – Low match (<40%)
 
-# Step 3: Install the necessary dependencies.
-npm i
+A **Best Matches** section highlights top-scoring roles.
 
-# Step 4: Start the development server with auto-reloading and an instant preview.
-npm run dev
-```
+---
 
-**Edit a file directly in GitHub**
+## 🔎 Advanced Filtering
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+Users can filter jobs by:
 
-**Use GitHub Codespaces**
+- Role / Job title
+- Skills (multi-select)
+- Date posted
+- Job type (Full-time, Contract, Internship, etc.)
+- Work mode (Remote, Hybrid, On-site)
+- Location
+- Match score range
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+---
 
-## What technologies are used for this project?
+## 📌 Smart Application Tracking
 
-This project is built with:
+When a user clicks “Apply”:
 
-- Vite
-- TypeScript
+1. The job link opens in a new tab.
+2. On returning, a smart popup asks:
+   - "Did you apply to this job?"
+3. Application status is saved automatically.
+
+### Application Pipeline
+
+Applications move through stages:
+Applied → Interview → Offer / Rejected
+
+Users can manually update status from the dashboard.
+
+---
+
+## 📊 Applications Dashboard
+
+- Kanban-style or timeline view
+- Filter by status stage
+- View application history
+- Track company, job title, and date applied
+
+---
+
+## 🤖 AI Sidebar Assistant
+
+An AI-powered chat assistant that:
+
+- Answers job search queries:
+  - “Show me remote React jobs”
+  - “Which jobs have highest match scores?”
+- Answers product-related questions:
+  - “How do I upload my resume?”
+  - “Where can I see my applications?”
+
+Powered via Supabase Edge Functions and AI API integration.
+
+---
+
+## 🏗 Technical Architecture
+
+### Frontend
 - React
-- shadcn-ui
+- TypeScript
+- Vite
 - Tailwind CSS
+- shadcn/ui
 
-## How can I deploy this project?
+### Backend
+- Supabase (Authentication + Database)
+- Supabase Edge Functions
+- Secure API key management
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+### External Integrations
+- JSearch API (via RapidAPI)
+- AI matching engine
 
-## Can I connect a custom domain to my Lovable project?
+---
 
-Yes, you can!
+## 🗄 Database Tables
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+- `profiles`
+- `resumes`
+- `applications`
+- `chat_messages`
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+---
+
+## ⚙️ Local Development
+
+```bash
+git clone https://github.com/yourusername/jobalignai.git
+cd jobalignai
+npm install
+npm run dev
+
+🌍 Deployment
+Frontend: Vercel
+Backend & Database: Supabase
+Edge Functions: Supabase CLI
+
+📌 Future Improvements
+Email reminders for application follow-ups
+Resume improvement suggestions via AI
+Interview preparation assistant
+Analytics dashboard for job search insights
