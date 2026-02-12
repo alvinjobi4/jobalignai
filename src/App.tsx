@@ -12,6 +12,7 @@ import SettingsPage from "@/pages/SettingsPage";
 import ResumeUpload from "@/components/ResumeUpload";
 import NavBar from "@/components/NavBar";
 import AIChatSidebar from "@/components/AIChatSidebar";
+import PredictionPage from "@/pages/PredictionPage";
 import NotFound from "@/pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -47,6 +48,7 @@ function AppContent() {
       <NavBar onSignOut={signOut} />
       <Routes>
         <Route path="/" element={<JobFeedPage userId={user.id} resumeText={resumeText} />} />
+        <Route path="/predictions" element={<PredictionPage />} />
         <Route path="/applications" element={<ApplicationsPage userId={user.id} />} />
         <Route path="/settings" element={<SettingsPage userId={user.id} />} />
         <Route path="*" element={<NotFound />} />

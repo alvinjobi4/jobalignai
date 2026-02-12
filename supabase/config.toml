@@ -1,1 +1,4 @@
 project_id = "twiwngqfzcyxtyvpyeiz"
+
+[functions.football-predict]
+verify_jwt = false

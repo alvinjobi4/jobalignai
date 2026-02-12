@@ -1,6 +1,6 @@
 import { Link, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
-import { Briefcase, LayoutDashboard, FileText, Settings, LogOut } from "lucide-react";
+import { Briefcase, LayoutDashboard, Settings, LogOut, Trophy } from "lucide-react";
 
 interface NavBarProps {
   onSignOut: () => void;
@@ -11,6 +11,7 @@ export default function NavBar({ onSignOut }: NavBarProps) {
 
   const links = [
     { to: "/", label: "Jobs", icon: Briefcase },
+    { to: "/predictions", label: "Predictions", icon: Trophy },
     { to: "/applications", label: "Applications", icon: LayoutDashboard },
     { to: "/settings", label: "Settings", icon: Settings },
   ];
