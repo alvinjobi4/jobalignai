@@ -145,6 +145,10 @@ Frontend: Vercel
 Backend & Database: Supabase
 Edge Functions: Supabase CLI
 
+
+🌍 Live Demo 
+https://jobalignai.vercel.app/
+
 📌 Future Improvements
 Email reminders for application follow-ups
 Resume improvement suggestions via AI
