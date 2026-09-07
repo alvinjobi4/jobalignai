@@ -4,3 +4,48 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function normalizeUrl(url?: string | null): string {
+  if (!url) return "";
+  const trimmed = url.trim();
+  if (!trimmed) return "";
+  if (/^https?:\/\//i.test(trimmed)) return trimmed;
+  return `https://${trimmed}`;
+}
+
+export function getJobApplyUrl(job: {
+  job_apply_link?: string | null;
+  apply_options?: Array<{ apply_link?: string; publisher?: string }> | null;
+  job_google_link?: string | null;
+  employer_website?: string | null;
+  employer_name?: string | null;
+  job_title?: string | null;
+}): string {
+  // 1. Direct apply link if available
+  if (job.job_apply_link && job.job_apply_link.trim().length > 0) {
+    return normalizeUrl(job.job_apply_link);
+  }
+
+  // 2. First valid publisher apply link (e.g. LinkedIn, Indeed, Glassdoor)
+  if (job.apply_options && Array.isArray(job.apply_options) && job.apply_options.length > 0) {
+    const validOption = job.apply_options.find((opt) => opt.apply_link && opt.apply_link.trim().length > 0);
+    if (validOption?.apply_link) {
+      return normalizeUrl(validOption.apply_link);
+    }
+  }
+
+  // 3. Google Jobs viewer link
+  if (job.job_google_link && job.job_google_link.trim().length > 0) {
+    return normalizeUrl(job.job_google_link);
+  }
+
+  // 4. Employer career/company website
+  if (job.employer_website && job.employer_website.trim().length > 0) {
+    return normalizeUrl(job.employer_website);
+  }
+
+  // 5. Fallback Google search query for the specific position
+  const employer = job.employer_name || "";
+  const title = job.job_title || "";
+  return `https://www.google.com/search?q=${encodeURIComponent(`${employer} ${title} apply job`.trim())}`;
+}

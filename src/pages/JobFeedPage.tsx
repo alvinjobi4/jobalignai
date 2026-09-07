@@ -8,6 +8,9 @@ import ApplyPopup from "@/components/ApplyPopup";
 import type { Job, JobFilters } from "@/types";
 import { useJobs } from "@/hooks/useJobs";
 import { useApplications } from "@/hooks/useApplications";
+import { useToast } from "@/hooks/use-toast";
+import { ToastAction } from "@/components/ui/toast";
+import { getJobApplyUrl } from "@/lib/utils";
 
 interface JobFeedPageProps {
   userId: string;
@@ -17,6 +20,7 @@ interface JobFeedPageProps {
 export default function JobFeedPage({ userId, resumeText }: JobFeedPageProps) {
   const { jobs, matchScores, loading, matchLoading, searchJobs, matchJobs } = useJobs();
   const { addApplication } = useApplications(userId);
+  const { toast } = useToast();
   const [filters, setFilters] = useState<JobFilters>({
     query: "software developer",
     skills: [],
@@ -52,18 +56,29 @@ export default function JobFeedPage({ userId, resumeText }: JobFeedPageProps) {
 
   const handleApply = (job: Job) => {
     setPendingJob(job);
-    if (job.job_apply_link) {
-      window.open(job.job_apply_link, "_blank");
-    }
+    const applyUrl = getJobApplyUrl(job);
+
+    toast({
+      title: `Applying to ${job.employer_name}`,
+      description: `Opening application for ${job.job_title}...`,
+      action: (
+        <ToastAction asChild altText="Open Link">
+          <a href={applyUrl} target="_blank" rel="noopener noreferrer">
+            Open Link
+          </a>
+        </ToastAction>
+      ),
+    });
   };
 
   const handlePopupConfirm = async (action: "applied" | "browsing" | "earlier") => {
     if ((action === "applied" || action === "earlier") && pendingJob) {
+      const applyUrl = getJobApplyUrl(pendingJob);
       await addApplication({
         job_id: pendingJob.job_id,
         job_title: pendingJob.job_title,
         company: pendingJob.employer_name,
-        job_url: pendingJob.job_apply_link,
+        job_url: applyUrl || pendingJob.job_apply_link,
         location: [pendingJob.job_city, pendingJob.job_state].filter(Boolean).join(", "),
       });
     }

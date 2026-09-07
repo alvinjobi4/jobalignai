@@ -16,6 +16,13 @@ export type Job = {
     Qualifications?: string[];
     Responsibilities?: string[];
   };
+  job_google_link?: string;
+  employer_website?: string;
+  apply_options?: Array<{
+    publisher?: string;
+    apply_link?: string;
+    is_direct?: boolean;
+  }>;
 };
 
 export type JobMatchScore = {

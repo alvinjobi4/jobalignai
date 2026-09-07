@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { MapPin, Building2, Clock, ExternalLink, Sparkles } from "lucide-react";
 import type { Job, JobMatchScore } from "@/types";
+import { getJobApplyUrl } from "@/lib/utils";
 
 interface JobCardProps {
   job: Job;
@@ -11,6 +12,8 @@ interface JobCardProps {
 }
 
 export default function JobCard({ job, score, onApply }: JobCardProps) {
+  const applyUrl = getJobApplyUrl(job);
+
   const matchColor = score
     ? score.score > 70 ? "bg-match-high text-white"
       : score.score >= 40 ? "bg-match-medium text-white"
@@ -42,7 +45,17 @@ export default function JobCard({ job, score, onApply }: JobCardProps) {
               </div>
             )}
             <div className="min-w-0">
-              <CardTitle className="text-base leading-tight line-clamp-2">{job.job_title}</CardTitle>
+              <a
+                href={applyUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => onApply(job)}
+                className="hover:text-primary transition-colors inline-block"
+              >
+                <CardTitle className="text-base leading-tight line-clamp-2 hover:underline">
+                  {job.job_title}
+                </CardTitle>
+              </a>
               <p className="mt-1 text-sm text-muted-foreground">{job.employer_name}</p>
             </div>
           </div>
@@ -94,9 +107,16 @@ export default function JobCard({ job, score, onApply }: JobCardProps) {
           <p className="text-xs text-muted-foreground italic">{score.explanation}</p>
         )}
 
-        <Button size="sm" className="w-full" onClick={() => onApply(job)}>
-          <ExternalLink className="mr-1 h-3 w-3" />
-          Apply
+        <Button asChild size="sm" className="w-full cursor-pointer">
+          <a
+            href={applyUrl}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => onApply(job)}
+          >
+            <ExternalLink className="mr-1 h-3 w-3" />
+            Apply
+          </a>
         </Button>
       </CardContent>
     </Card>
