@@ -49,3 +49,25 @@ export function getJobApplyUrl(job: {
   const title = job.job_title || "";
   return `https://www.google.com/search?q=${encodeURIComponent(`${employer} ${title} apply job`.trim())}`;
 }
+
+export async function extractTextFromFile(file: File): Promise<string> {
+  const rawText = await file.text();
+  if (file.name.toLowerCase().endsWith(".txt")) {
+    return rawText;
+  }
+
+  // Clean ASCII characters and words from PDF or other text formats
+  const cleanAscii = rawText
+    .replace(/[^\x20-\x7E\r\n\t]/g, " ")
+    .replace(/\s+/g, " ");
+
+  const words = cleanAscii.match(/[a-zA-Z0-9.,@#+/\-_]{2,}/g) || [];
+  const extracted = words.join(" ");
+
+  if (extracted.length > 30) {
+    return extracted.slice(0, 15000);
+  }
+
+  return rawText.slice(0, 15000);
+}
+

@@ -1,15 +1,15 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useResume } from "@/hooks/useResume";
 import AuthPage from "@/pages/AuthPage";
 import JobFeedPage from "@/pages/JobFeedPage";
 import ApplicationsPage from "@/pages/ApplicationsPage";
 import SettingsPage from "@/pages/SettingsPage";
-import ResumeUpload from "@/components/ResumeUpload";
 import NavBar from "@/components/NavBar";
 import AIChatSidebar from "@/components/AIChatSidebar";
 import PredictionPage from "@/pages/PredictionPage";
@@ -21,6 +21,25 @@ function AppContent() {
   const { user, loading: authLoading, signIn, signUp, signOut } = useAuth();
   const { resumeText, hasResume, loading: resumeLoading, uploadResume } = useResume(user?.id);
 
+  // Sync any pending resume uploaded during signup once the user session is active
+  useEffect(() => {
+    if (user?.email && !hasResume && !resumeLoading) {
+      const pendingKey = `pending_resume_${user.email.toLowerCase().trim()}`;
+      const pendingRaw = localStorage.getItem(pendingKey);
+      if (pendingRaw) {
+        try {
+          const pending = JSON.parse(pendingRaw);
+          if (pending?.text) {
+            uploadResume(pending.text, pending.fileName || "resume.pdf");
+            localStorage.removeItem(pendingKey);
+          }
+        } catch (e) {
+          console.error("Error syncing pending resume:", e);
+        }
+      }
+    }
+  }, [user, hasResume, resumeLoading]);
+
   if (authLoading) {
     return (
       <div className="flex min-h-screen items-center justify-center">
@@ -30,15 +49,13 @@ function AppContent() {
   }
 
   if (!user) {
-    return <AuthPage onAuth={() => {}} signIn={signIn} signUp={signUp} />;
-  }
-
-  if (!resumeLoading && !hasResume) {
     return (
-      <ResumeUpload
-        onUpload={uploadResume}
-        onSkip={() => uploadResume("", "skipped")}
-        isOnboarding
+      <AuthPage
+        signIn={signIn}
+        signUp={signUp}
+        onSignUpSuccess={async (userId, text, fileName) => {
+          await uploadResume(text, fileName);
+        }}
       />
     );
   }

@@ -23,8 +23,17 @@ export function useAuth() {
     return () => subscription.unsubscribe();
   }, []);
 
-  const signUp = async (email: string, password: string, fullName: string) => {
-    const { error } = await supabase.auth.signUp({
+  const signUp = async (
+    email: string,
+    password: string,
+    fullName: string,
+    resumeData?: { text: string; fileName: string }
+  ) => {
+    if (resumeData?.text) {
+      localStorage.setItem(`pending_resume_${email.toLowerCase().trim()}`, JSON.stringify(resumeData));
+    }
+
+    const { data, error } = await supabase.auth.signUp({
       email,
       password,
       options: {
@@ -32,7 +41,23 @@ export function useAuth() {
         data: { full_name: fullName },
       },
     });
-    return { error };
+
+    if (error) return { data: null, error };
+
+    const newUserId = data.user?.id;
+    if (newUserId && resumeData?.text) {
+      try {
+        await supabase.from("resumes").insert({
+          user_id: newUserId,
+          resume_text: resumeData.text,
+          file_name: resumeData.fileName,
+        });
+      } catch (e) {
+        console.error("Resume insert on signup:", e);
+      }
+    }
+
+    return { data, error: null };
   };
 
   const signIn = async (email: string, password: string) => {

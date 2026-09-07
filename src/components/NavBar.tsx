@@ -24,7 +24,7 @@ export default function NavBar({ onSignOut }: NavBarProps) {
             <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-primary">
               <Briefcase className="h-4 w-4 text-primary-foreground" />
             </div>
-            JobMatch
+            JobAlignAI
           </Link>
           <nav className="hidden items-center gap-1 sm:flex">
             {links.map(({ to, label, icon: Icon }) => (

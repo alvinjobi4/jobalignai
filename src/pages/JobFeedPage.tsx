@@ -1,6 +1,8 @@
 import { useState, useEffect, useCallback } from "react";
+import { Link } from "react-router-dom";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 import { Sparkles, Loader2 } from "lucide-react";
 import JobCard from "@/components/JobCard";
 import FilterSidebar from "@/components/FilterSidebar";
@@ -112,6 +114,26 @@ export default function JobFeedPage({ userId, resumeText }: JobFeedPageProps) {
 
         {/* Main content */}
         <main className="flex-1 min-w-0 space-y-6">
+          {/* Resume Prompt Banner if not uploaded */}
+          {!resumeText && (
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 rounded-xl border border-primary/20 bg-primary/5 p-4">
+              <div className="flex items-center gap-3">
+                <Sparkles className="h-5 w-5 text-primary shrink-0" />
+                <div>
+                  <p className="font-medium text-sm text-foreground">Add your resume to see AI match scores</p>
+                  <p className="text-xs text-muted-foreground">
+                    You can attach or update your resume anytime in Settings to activate AI compatibility matching.
+                  </p>
+                </div>
+              </div>
+              <Link to="/settings" className="shrink-0">
+                <Button size="sm" variant="outline" className="text-xs cursor-pointer">
+                  Go to Settings
+                </Button>
+              </Link>
+            </div>
+          )}
+
           {/* Best matches */}
           {bestMatches.length > 0 && !loading && (
             <section>
